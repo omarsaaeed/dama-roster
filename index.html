@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAMA Speaker Roster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1e40af;
+    --blue-deep:#14296e;
+    --accent:#3b82f6;
+    --accent-soft:#dbeafe;
+    --ink:#1e293b;
+    --muted:#64748b;
+    --faint:#94a3b8;
+    --bg:#f4f6fb;
+    --card:#ffffff;
+    --line:#e6eaf2;
+    --row-alt:#f7f9fd;
+    --shadow:0 1px 2px rgba(15,31,85,.04),0 8px 24px rgba(15,31,85,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* Header */
+  .masthead{background:linear-gradient(135deg,var(--blue-deep) 0%,var(--blue) 100%);color:#fff;padding:38px 28px 26px}
+  .mast-inner{max-width:1280px;margin:0 auto}
+  .eyebrow{font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.2em;text-transform:uppercase;font-size:11.5px;color:#9db8ff}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,4vw,38px);line-height:1.05;margin:8px 0 6px;letter-spacing:-.02em}
+  .lede{color:#c8d6ff;font-size:15px}
+
+  /* Toolbar */
+  .toolbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:16px 28px}
+  .tool-inner{max-width:1280px;margin:0 auto}
+  .search-wrap{position:relative;display:flex;align-items:center}
+  .search-wrap svg{position:absolute;left:15px;width:18px;height:18px;stroke:var(--faint)}
+  #search{width:100%;border:1px solid var(--line);background:#fff;border-radius:11px;padding:12px 16px 12px 44px;font:inherit;font-size:15px;color:var(--ink);box-shadow:var(--shadow);transition:border-color .15s,box-shadow .15s}
+  #search:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+  #search::placeholder{color:var(--faint)}
+
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .chip{font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:500;border:1px solid var(--line);background:#fff;color:var(--muted);padding:7px 13px;border-radius:999px;cursor:pointer;transition:all .15s;white-space:nowrap}
+  .chip:hover{border-color:var(--accent);color:var(--blue)}
+  .chip.active{background:var(--blue);border-color:var(--blue);color:#fff}
+  .chip .c{opacity:.6;font-variant-numeric:tabular-nums}
+  .chip.active .c{opacity:.85}
+
+  /* Table */
+  main{max-width:1280px;margin:0 auto;padding:22px 28px 80px}
+  .tablecard{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+  .scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:1000px}
+  thead th{
+    position:sticky;top:0;z-index:5;
+    background:var(--blue);color:#fff;
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:11.5px;
+    letter-spacing:.04em;text-transform:uppercase;
+    text-align:left;padding:13px 16px;white-space:nowrap;
+  }
+  tbody td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+  tbody tr.data-row:nth-child(even of .data-row){background:var(--row-alt)}
+  tbody tr.data-row:hover{background:var(--accent-soft)}
+  .cat-row td{
+    background:#eef2fb;
+    border-top:2px solid var(--blue);
+    border-bottom:1px solid var(--line);
+    padding:11px 16px;
+  }
+  .cat-row .cat-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13.5px;color:var(--blue-deep);letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+  .cat-row .cat-count{background:var(--blue);color:#fff;font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px}
+
+  .t-title{font-weight:600;color:var(--ink);max-width:430px}
+  .t-speaker{font-weight:600;white-space:nowrap}
+  .t-org{color:var(--muted);max-width:240px}
+  .t-contact a{font-weight:500;word-break:break-word}
+
+  .pill{display:inline-block;font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;margin:1px 2px 1px 0;white-space:nowrap}
+  .p-venue{background:#eef2ff;color:#3949ab}
+  .p-cost{background:#fff3e0;color:#b45309}
+  .p-lang{background:#e0f2f1;color:#0f766e}
+  .dash{color:var(--faint)}
+
+  .empty{display:none;text-align:center;padding:60px 20px;color:var(--muted)}
+  .empty h3{font-family:'Space Grotesk',sans-serif;color:var(--ink);margin-bottom:6px;font-size:18px}
+
+  .countline{font-size:13px;color:var(--muted);margin:0 0 14px;padding:0 2px}
+  .countline b{color:var(--ink)}
+
+  footer{text-align:center;color:var(--faint);font-size:12.5px;padding:0 20px 50px}
+  footer b{color:var(--muted)}
+
+  @media(max-width:640px){
+    .masthead{padding:30px 18px 22px}
+    .toolbar,main{padding-left:14px;padding-right:14px}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="mast-inner">
+    <div class="eyebrow">DAMA International</div>
+    <h1>Speaker Roster</h1>
+    <p class="lede">Search and filter speakers by knowledge area, then contact them directly.</p>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="tool-inner">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="search" type="text" placeholder="Search by speaker, topic, organization, or language" autocomplete="off">
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+</div>
+
+<main>
+  <p class="countline" id="countline"></p>
+  <div class="tablecard">
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Title of Presentation</th>
+            <th>Speaker</th>
+            <th>Venues</th>
+            <th>Costs</th>
+            <th>Languages</th>
+            <th>Presenter Organization</th>
+            <th>Contact Information</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="empty" id="empty">
+    <h3>No matches</h3>
+    <p>Try a different name, topic, or language.</p>
+  </div>
+</main>
+
+<footer>
+  <b>DAMA International</b> Speaker Roster. Contact each speaker directly to confirm availability, fees, and format.
+</footer>
+
+<script>
+const DATA = [
+  {cat:"Data Management & Strategy", title:"From AI Phobic to AI Fluency: Building an AI Literacy Program, Speaking Data: How to Train Business Leaders to Ask the Right Questions, Measuring Data/AI Literacy Beyond Completion Rates, Building a Strategic AI Governance Program, Selecting Strategic AI Use Cases", speaker:"Diane Igoche", org:"", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:[], email:["diane@dianeigoche.com"]},
+  {cat:"Data Management & Strategy", title:"AI Driven Solutions For Optimizing Master Data Management", speaker:"Srinivas Vangari", org:"McGraw Hill", venue:["Virtual"], cost:[], lang:[], email:["srinivas.vangari@gmail.com"]},
+  {cat:"Data Management & Strategy", title:"Building an AI-First Data Office: From Intelligent Metadata to Global Compliance at Scale", speaker:"Peter Vennel", org:"Finastra", venue:["In Person"], cost:["Expenses"], lang:[], email:["vfpeter@gmail.com"]},
+  {cat:"Data Management & Strategy", title:"Data Management for AI, Analytics Transformation, Role of Analytics Engineering in Modern Day Data World, How Important Metadata Is for AI", speaker:"Narayanaswamy Ramajayam", org:"", venue:["Virtual","In Person"], cost:[], lang:[], email:["harisam1985@gmail.com"]},
+  {cat:"Data Management & Strategy", title:"Is your data ready for AI?", speaker:"Ronald Baan", org:"", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["ronald@ronaldbaan.com"]},
+  {cat:"Data Management & Strategy", title:"Leading the Human Side of AI Changes", speaker:"Aakriti Agrawal Kim", org:"", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Hindi"], email:["aakriti1215@gmail.com"]},
+  {cat:"Data Management & Strategy", title:"Data Governance Change Management (using the ANCHOR Framework)", speaker:"Aakriti Agrawal Kim", org:"", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Hindi"], email:["aakriti1215@gmail.com"]},
+  {cat:"Data Management & Strategy", title:"Data Valuation for Data Strategy", speaker:"Stefano Arcuri", org:"Lucca81 Strategy / DAMA Spain Chapter", venue:["In Person"], cost:[], lang:[], email:["stefano.arcuri68@gmail.com"]},
+  {cat:"Data Management & Strategy", title:"How to succeed in managing your data", speaker:"Azza Abdou", org:"Credit Agricole Egypt", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:["Arabic"], email:["Azzaabdou@gmail.com"]},
+  {cat:"Data Management & Strategy", title:"How to let your project succeed", speaker:"Azza Abdou", org:"Credit Agricole Egypt", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:["Arabic"], email:["Azzaabdou@gmail.com"]},
+  {cat:"Data Management & Strategy", title:"Customer Engagement Strategy: Planning, Architecture and Implementation", speaker:"Mehmet Orun", org:"Salesforce", venue:["Virtual"], cost:[], lang:[], email:["mehmet@orun.net"]},
+  {cat:"Data Management & Strategy", title:"Customer Engagement Data Strategy: Planning, Architecture, and Implementation Best Practices", speaker:"Mehmet Orun", org:"Salesforce", venue:["Virtual"], cost:[], lang:[], email:["mehmet@orun.net"]},
+  {cat:"Data Management & Strategy", title:"Build a scalable Data Pipeline for Reporting & Analytics", speaker:"Igor Ikonnikov", org:"Info-Tech Research Group", venue:["Virtual","In Person"], cost:[], lang:[], email:["iikonnikov@infotech.com"]},
+  {cat:"Data Management & Strategy", title:"Data Leadership", speaker:"Tony Mazzarella", org:"Voya Financial, DAMA New England", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["tonymazzarella3@gmail.com"]},
+  {cat:"Data Management & Strategy", title:"Data-Driven Strategies for Smart Territories", speaker:"Fabiola Del Toro Osorio", org:"TinySoft / Escuela Colombiana de Ingenieria University", venue:["Virtual"], cost:["Expenses"], lang:["Spanish"], email:["fdeltoro@tinysoft.com.co","fabiola.deltoro@escuelaing.edu.co"]},
+  {cat:"Data Management & Strategy", title:"Data Migration", speaker:"Faizura Haneem Mohd Ali", org:"MAMPU", venue:[], cost:[], lang:[], email:["haneem@mampu.gov.my"]},
+  {cat:"Data Management & Strategy", title:"Data Integration", speaker:"Faizura Haneem Mohd Ali", org:"MAMPU", venue:[], cost:[], lang:[], email:["haneem@mampu.gov.my"]},
+  {cat:"Data Management & Strategy", title:"Data Sharing in Government", speaker:"Faizura Haneem Mohd Ali", org:"MAMPU", venue:[], cost:[], lang:[], email:["haneem@mampu.gov.my"]},
+  {cat:"Data Management & Strategy", title:"Data Strategies for Data Governance and More (based on the book Data Strategies for Data Governance, Lopez, 2023)", speaker:"Marilu Lopez", org:"Servicios de Estrategia y Gestion de Datos Aplicada S.C.", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Spanish"], email:["marilu.lopez@segda.com.mx"]},
+  {cat:"Data Management & Strategy", title:"Data Strategy", speaker:"Marilu Lopez", org:"Servicios de Estrategia y Gestion de Datos Aplicada S.C.", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Spanish"], email:["marilu.lopez@segda.com.mx"]},
+  {cat:"Data Management & Strategy", title:"Can Talk on Anything and Happy to Help with CDMP Reviews or Give Practical Experience Talks", speaker:"Kristin Love", org:"", venue:["Virtual","In Person"], cost:["Expenses"], lang:["French"], email:["klove010104@msn.com"]},
+  {cat:"Data Management & Strategy", title:"Enterprise Architecture Data Management / Process Management Innovations", speaker:"Douglas Erickson", org:"ENTARCO USA Inc.", venue:["Virtual","In Person"], cost:[], lang:[], email:["doug.erickson@entarcousa.com"]},
+  {cat:"Data Management & Strategy", title:"Surprising Benefits from Innovations in Process Methodology and Data Methodology Restructuring", speaker:"Douglas Erickson", org:"ENTARCO USA Inc.", venue:["Virtual","In Person"], cost:[], lang:[], email:["doug.erickson@entarcousa.com"]},
+  {cat:"Data Management & Strategy", title:"Data Management Use Cases", speaker:"Stephanie Wagenaar", org:"FTI Consulting", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Dutch"], email:["stephanie.wagenaar@fticonsulting.com"]},
+  {cat:"Data Management & Strategy", title:"Data Strategy", speaker:"Stephanie Wagenaar", org:"FTI Consulting", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Dutch"], email:["stephanie.wagenaar@fticonsulting.com"]},
+  {cat:"Data Management & Strategy", title:"Practical Data Applications", speaker:"Kristin Love", org:"GSK", venue:["Virtual","In Person"], cost:["Expenses"], lang:["French"], email:["klove010104@gmail.com"]},
+  {cat:"Data Management & Strategy", title:"Use Cases: Data Management from Different Industries", speaker:"Stephanie Wagenaar", org:"FTI Consulting", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Dutch"], email:["stephanie.wagenaar@fticonsulting.com"]},
+  {cat:"Data Management & Strategy", title:"Data Management during a Data Migration", speaker:"Stephanie Wagenaar", org:"FTI Consulting", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Dutch"], email:["stephanie.wagenaar@fticonsulting.com"]},
+  {cat:"Data Management & Strategy", title:"The Four Pillars of Digital Transformation: Where Is the Hierarchical Place of Data Inside a Digital Transformation Project", speaker:"Francisco (Frank) Quintana Rivas", org:"Independent Consultant", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:["Spanish"], email:["frank.quintana@rocketmail.com"]},
+  {cat:"Data Management & Strategy", title:"Unlocking Business Value: Data Literacy for Strategic Decision-Making", speaker:"Efua Dougan", org:"DS Consortium for Information Technology Consultants LLC", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:[], email:["efua.dougan@legroupeds.com"]},
+  {cat:"Data Management & Strategy", title:"Four Simple Rules for Managing your Teenage Data", speaker:"Mark Horseman", org:"Dataversity", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["mark@dataversity.net"]},
+  {cat:"Data Management & Strategy", title:"Data Lake House Architecture: Implementation and Applications", speaker:"Shamnad Shaffi, Jinal Mehta", org:"Amazon Web Services", venue:["Virtual"], cost:[], lang:[], email:["shamnadshaffi@ieee.org"]},
+  {cat:"Data Management & Strategy", title:"Whose Data Is It Anyway?", speaker:"Deron Hook", org:"Atlan", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["deron.hook@dama.org"]},
+  {cat:"Data Management & Strategy", title:"Empowering Data Stewards: The Frontline of Digital Transformation", speaker:"Harro Wiersma", org:"XAPPO Enterprises Ltd.", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Dutch","German","Swedish"], email:["h@rro.email"]},
+  {cat:"Data Management & Strategy", title:"Data Strategy", speaker:"Lukas Negrin", org:"DAMA Austria Vienna / Datenkraftwerk GmbH", venue:["Virtual","In Person"], cost:["Expenses"], lang:["German"], email:["lukas@datenkraftwerk.at"]},
+  {cat:"Data Management & Strategy", title:"Building Trusted Data Foundations for the Intelligent Enterprise", speaker:"Kinshuk Dutta", org:"ON EBX, a Cloud Software Group business unit", venue:["Virtual","In Person"], cost:[], lang:[], email:["kinshuk.dutta@onebx.com"]},
+
+  {cat:"Data Handling Ethics", title:"Data Governance as Enabler for Artificial Intelligence", speaker:"Jihad Rashid Al Wahshi", org:"Central Bank of Oman", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:[], email:["Jihad.alwahshi@gmail.com"]},
+
+  {cat:"Data Governance", title:"Governance-as-Code: Turning Data Policy into Software Engineering Practice for the AI Era", speaker:"Karthik Ravichandran", org:"Woven.dev", venue:["Virtual","In Person"], cost:[], lang:[], email:["karthik@woven.dev"]},
+  {cat:"Data Governance", title:"Data Governance as a Roadmap to Effective AI Implementation", speaker:"Koushik Barhale", org:"", venue:["Virtual"], cost:[], lang:[], email:["barhale.koushik@gmail.com"]},
+  {cat:"Data Governance", title:"AI Ethics, Data, and Privacy", speaker:"Frank Kadwell", org:"D3 Information Services", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["fkadwell@d3informationservices.com"]},
+  {cat:"Data Governance", title:"Data Governance", speaker:"Azza Abdou", org:"Credit Agricole Egypt", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:["Arabic"], email:["Azzaabdou@gmail.com"]},
+  {cat:"Data Governance", title:"Best Practices: Canonical Model Driven Data Governance", speaker:"Mehmet Orun", org:"Salesforce", venue:["Virtual"], cost:[], lang:[], email:["mehmet@orun.net"]},
+  {cat:"Data Governance", title:"Canonical Model Driven Data Governance: Standards, Policies, Metadata Interoperability Needs", speaker:"Mehmet Orun", org:"Salesforce", venue:["Virtual"], cost:[], lang:[], email:["mehmet@orun.net"]},
+  {cat:"Data Governance", title:"Data Governance, Data Quality Management, Data Leadership", speaker:"Tony Mazzarella", org:"Voya Financial, DAMA New England", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["tonymazzarella3@gmail.com"]},
+  {cat:"Data Governance", title:"Data Governance Fundamentals & Governance Workshop", speaker:"Francisco Guinez", org:"Data Management Consulting", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Spanish"], email:["FGuinez@dmclatino.com"]},
+  {cat:"Data Governance", title:"Data Governance", speaker:"Frank Cerwin", org:"Data Mastery Inc.", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["frank.cerwin@damachicago.org"]},
+  {cat:"Data Governance", title:"Data Governance Use Cases", speaker:"Stephanie Wagenaar", org:"FTI Consulting", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Dutch"], email:["stephanie.wagenaar@fticonsulting.com"]},
+  {cat:"Data Governance", title:"Data Governance", speaker:"Stephanie Wagenaar", org:"FTI Consulting", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Dutch"], email:["stephanie.wagenaar@fticonsulting.com"]},
+  {cat:"Data Governance", title:"Applying Data Governance in the 14 Trillion Dollar Financial Industry that Operates Like They Are in the 1970s", speaker:"Cindy Vander Meulen", org:"Cambridge Investment Research", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["vandermeulen.cindy@gmail.com"]},
+  {cat:"Data Governance", title:"Fundamentals of Data Governance & Quality for SMEs", speaker:"Efua Dougan", org:"DS Consortium for Information Technology Consultants LLC", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:[], email:["efua.dougan@legroupeds.com"]},
+  {cat:"Data Governance", title:"Ensuring Compliance and Security: A Data Governance Approach", speaker:"Rajesh Vayyala", org:"PRA Group Inc", venue:["Virtual","In Person"], cost:[], lang:[], email:["vayyalarajesh@gmail.com"]},
+  {cat:"Data Governance", title:"The Role of Data Governance in Enabling Data-Driven Organizations", speaker:"Rajesh Vayyala", org:"PRA Group Inc", venue:["Virtual","In Person"], cost:[], lang:[], email:["vayyalarajesh@gmail.com"]},
+  {cat:"Data Governance", title:"Data Governance", speaker:"Rajesh Vayyala", org:"PRA Group Inc", venue:["Virtual","In Person"], cost:[], lang:[], email:["vayyalarajesh@gmail.com"]},
+  {cat:"Data Governance", title:"An Investigation into the Role of Information Governance in Mitigating the Risks of Money Laundering: A Case Study of the Omani Banking Sector", speaker:"Jihad Rashid Al Wahshi", org:"Central Bank of Oman", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:[], email:["Jihad.alwahshi@gmail.com"]},
+  {cat:"Data Governance", title:"Data Governance as Enabler for Artificial Intelligence", speaker:"Jihad Rashid Al Wahshi", org:"Central Bank of Oman", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:[], email:["Jihad.alwahshi@gmail.com"]},
+  {cat:"Data Governance", title:"The Role of Data Governance Practices in Improving Data Quality in the Banking Industry", speaker:"Jihad Rashid Al Wahshi", org:"Central Bank of Oman", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:[], email:["Jihad.alwahshi@gmail.com"]},
+  {cat:"Data Governance", title:"Data Governance", speaker:"Shamnad Shaffi, Jinal Mehta", org:"Amazon Web Services", venue:["Virtual"], cost:[], lang:[], email:["shamnadshaffi@ieee.org"]},
+  {cat:"Data Governance", title:"A Career in Data Governance: Strategies in Recruiting, Hiring, and Training", speaker:"Deron Hook", org:"Atlan", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["deron.hook@dama.org"]},
+  {cat:"Data Governance", title:"Dollars and Data: The Top 10 Ways to Show the Value of Data Governance", speaker:"Deron Hook", org:"Atlan", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["deron.hook@dama.org"]},
+  {cat:"Data Governance", title:"Breaking Down Silos: Building an Integrated Data Governance Framework", speaker:"Harro Wiersma", org:"XAPPO Enterprises Ltd.", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Dutch","German","Swedish"], email:["h@rro.email"]},
+  {cat:"Data Governance", title:"Unlocking Business Value Through Strategic Data & AI Governance", speaker:"Harro Wiersma", org:"XAPPO Enterprises Ltd.", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Dutch","German","Swedish"], email:["h@rro.email"]},
+  {cat:"Data Governance", title:"Data Governance", speaker:"Lukas Negrin", org:"DAMA Austria Vienna / Datenkraftwerk GmbH", venue:["Virtual","In Person"], cost:["Expenses"], lang:["German"], email:["lukas@datenkraftwerk.at"]},
+  {cat:"Data Governance", title:"Data Governance Office Hours for New Data Stewards", speaker:"Chikitia Benjamin", org:"", venue:["Virtual"], cost:[], lang:[], email:["chikitia.benjamin@gmail.com"]},
+  {cat:"Data Governance", title:"A New Governance Pattern for AI Knowledge Assets", speaker:"Ravi Kumar Kappagantu", org:"Lloyds Technology Centre", venue:["Virtual"], cost:[], lang:[], email:["rkappagantu@gmail.com"]},
+
+  {cat:"Data Architecture", title:"Data Architecture", speaker:"Kristin Love", org:"", venue:["Virtual","In Person"], cost:["Expenses"], lang:["French"], email:["klove010104@msn.com"]},
+  {cat:"Data Architecture", title:"Enterprise Architecture Data Management / Process Management Innovations", speaker:"Douglas Erickson", org:"ENTARCO USA Inc.", venue:["Virtual","In Person"], cost:[], lang:[], email:["doug.erickson@entarcousa.com"]},
+  {cat:"Data Architecture", title:"Enterprise Architecture", speaker:"Douglas Erickson", org:"ENTARCO USA Inc.", venue:["Virtual","In Person"], cost:[], lang:[], email:["doug.erickson@entarcousa.com"]},
+  {cat:"Data Architecture", title:"Enterprise Architecture Data Management Innovations", speaker:"Douglas Erickson", org:"ENTARCO USA Inc.", venue:["Virtual","In Person"], cost:[], lang:[], email:["doug.erickson@entarcousa.com"]},
+  {cat:"Data Architecture", title:"Enterprise Architecture Process Management Innovations", speaker:"Douglas Erickson", org:"ENTARCO USA Inc.", venue:["Virtual","In Person"], cost:[], lang:[], email:["doug.erickson@entarcousa.com"]},
+  {cat:"Data Architecture", title:"Overview of the Erickson Methodology for Enterprise Architecture (published Dec. 2020)", speaker:"Douglas Erickson", org:"ENTARCO USA Inc.", venue:["Virtual","In Person"], cost:[], lang:[], email:["doug.erickson@entarcousa.com"]},
+  {cat:"Data Architecture", title:"Innovations in Developing an Enterprise Data Architecture that Delivers High Quality Data in Less Time and at Lower Cost", speaker:"Douglas Erickson", org:"ENTARCO USA Inc.", venue:["Virtual","In Person"], cost:[], lang:[], email:["doug.erickson@entarcousa.com"]},
+  {cat:"Data Architecture", title:"Data Architecture and Data Modeling", speaker:"Kristin Love", org:"GSK", venue:["Virtual","In Person"], cost:["Expenses"], lang:["French"], email:["klove010104@gmail.com"]},
+  {cat:"Data Architecture", title:"Data Architecture", speaker:"Rajesh Vayyala", org:"PRA Group Inc", venue:["Virtual","In Person"], cost:[], lang:[], email:["vayyalarajesh@gmail.com"]},
+
+  {cat:"Data Modeling & Design", title:"Bridging Conceptual and Physical Data Models: Lessons from Large-Scale Healthcare Systems", speaker:"Murali Haridass", org:"Acentra Health", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["murali.manoharan@gmail.com"]},
+  {cat:"Data Modeling & Design", title:"Building a Scalable Data Pipeline for Reporting & Analytics", speaker:"Igor Ikonnikov", org:"Info-Tech Research Group", venue:["Virtual","In Person"], cost:[], lang:[], email:["iikonnikov@infotech.com"]},
+  {cat:"Data Modeling & Design", title:"Models, Metaphor and Meaning", speaker:"Joe Danielewicz", org:"Joe Danielewicz Consulting, LLC", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["joe_danielewicz@msn.com"]},
+  {cat:"Data Modeling & Design", title:"Conceptual / Business Data Modeling", speaker:"Pete Stiglich", org:"Data Principles, LLC", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["pstiglich@data-principles.com"]},
+  {cat:"Data Modeling & Design", title:"Building Effective Data Models for Real-Time Analytics and Decision Making", speaker:"Rajesh Vayyala", org:"PRA Group Inc", venue:["Virtual","In Person"], cost:[], lang:[], email:["vayyalarajesh@gmail.com"]},
+  {cat:"Data Modeling & Design", title:"Data Modeling for the Cloud: Best Practices and Emerging Techniques", speaker:"Rajesh Vayyala", org:"PRA Group Inc", venue:["Virtual","In Person"], cost:[], lang:[], email:["vayyalarajesh@gmail.com"]},
+  {cat:"Data Modeling & Design", title:"Transforming Data Models: Navigating Complexities in Big Data Environments", speaker:"Rajesh Vayyala", org:"PRA Group Inc", venue:["Virtual","In Person"], cost:[], lang:[], email:["vayyalarajesh@gmail.com"]},
+  {cat:"Data Modeling & Design", title:"Data Modeling", speaker:"Rajesh Vayyala", org:"PRA Group Inc", venue:["Virtual","In Person"], cost:[], lang:[], email:["vayyalarajesh@gmail.com"]},
+
+  {cat:"Data Storage & Operations", title:"New Types of Databases", speaker:"Pete Stiglich", org:"Data Principles, LLC", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["pstiglich@data-principles.com"]},
+
+  {cat:"Data Security", title:"Privacy Aware Cross Border Data Transfer (PACT)-AI", speaker:"Srivatsa Balasubramanyam", org:"American Express", venue:["Virtual","In Person"], cost:[], lang:[], email:["srivatsa.balasubramanyam@aexp.com"]},
+  {cat:"Data Security", title:"Data Governance in the Cloud: Protecting Data While Scaling", speaker:"Rajesh Vayyala", org:"PRA Group Inc", venue:["Virtual","In Person"], cost:[], lang:[], email:["vayyalarajesh@gmail.com"]},
+  {cat:"Data Security", title:"Data Security", speaker:"Shamnad Shaffi, Jinal Mehta", org:"Amazon Web Services", venue:["Virtual"], cost:[], lang:[], email:["shamnadshaffi@ieee.org"]},
+
+  {cat:"Reference & Master Data", title:"Reference / Master Data and Ontologies", speaker:"Kristin Love", org:"", venue:["Virtual","In Person"], cost:["Expenses"], lang:["French"], email:["klove010104@msn.com"]},
+  {cat:"Reference & Master Data", title:"Master Data Management", speaker:"Frank Cerwin", org:"Data Mastery Inc.", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["frank.cerwin@damachicago.org"]},
+  {cat:"Reference & Master Data", title:"Master / Reference Data and Ontologies", speaker:"Kristin Love", org:"GSK", venue:["Virtual","In Person"], cost:["Expenses"], lang:["French"], email:["klove010104@gmail.com"]},
+
+  {cat:"Data Warehousing & BI", title:"Business Intelligence", speaker:"Azza Abdou", org:"Credit Agricole Egypt", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:["Arabic"], email:["Azzaabdou@gmail.com"]},
+  {cat:"Data Warehousing & BI", title:"Data Warehousing & BI", speaker:"Kristin Love", org:"", venue:["Virtual","In Person"], cost:["Expenses"], lang:["French"], email:["klove010104@msn.com"]},
+
+  {cat:"Metadata", title:"Metadata Management", speaker:"Marilu Lopez", org:"SSI - Soluciones Software Inteligente", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Spanish"], email:["marilu.lopez@soluciones-si.com"]},
+
+  {cat:"Data Quality", title:"Data Strategy, Data Modeling, Data Quality, Analytics, Data Management, Big Data and Data Science", speaker:"Sainyam Arora", org:"Johnson Matthey", venue:["Virtual","In Person"], cost:[], lang:["Hindi"], email:["sarora8233@outlook.com"]},
+  {cat:"Data Quality", title:"Data Quality Leadership", speaker:"Tony Mazzarella", org:"Voya Financial, DAMA New England", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["tonymazzarella3@gmail.com"]},
+  {cat:"Data Quality", title:"Data Governance, Data Quality Management, Data Leadership", speaker:"Tony Mazzarella", org:"Voya Financial, DAMA New England", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["tonymazzarella3@gmail.com"]},
+  {cat:"Data Quality", title:"Data Quality", speaker:"Marilu Lopez", org:"SSI - Soluciones Software Inteligente", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Spanish"], email:["marilu.lopez@soluciones-si.com"]},
+  {cat:"Data Quality", title:"The Role of Data Governance Practices in Improving Data Quality in the Banking Industry", speaker:"Jihad Rashid Al Wahshi", org:"Central Bank of Oman", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:[], email:["Jihad.alwahshi@gmail.com"]},
+
+  {cat:"Big Data & Data Science", title:"Intersection of Data Management with AI/ML", speaker:"Kristin Love", org:"GSK", venue:["Virtual","In Person"], cost:["Expenses"], lang:["French"], email:["klove010104@gmail.com"]},
+  {cat:"Big Data & Data Science", title:"The Intelligence Life Cycle: An Axiomatic Theory of the Intelligence Life Cycle and the Limitations of AI and Big Data", speaker:"Francisco (Frank) Quintana Rivas", org:"Independent Consultant", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:["Spanish"], email:["frank.quintana@rocketmail.com"]},
+  {cat:"Big Data & Data Science", title:"Data Analysis", speaker:"Rajesh Vayyala", org:"PRA Group Inc", venue:["Virtual","In Person"], cost:[], lang:[], email:["vayyalarajesh@gmail.com"]},
+  {cat:"Big Data & Data Science", title:"Cloud Concepts", speaker:"Rajesh Vayyala", org:"PRA Group Inc", venue:["Virtual","In Person"], cost:[], lang:[], email:["vayyalarajesh@gmail.com"]},
+  {cat:"Big Data & Data Science", title:"Data Governance as Enabler for Artificial Intelligence", speaker:"Jihad Rashid Al Wahshi", org:"Central Bank of Oman", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:[], email:["Jihad.alwahshi@gmail.com"]},
+
+  {cat:"Analytics", title:"Self Service Analytics", speaker:"Pete Stiglich", org:"Data Principles, LLC", venue:["Virtual","In Person"], cost:["Expenses"], lang:[], email:["pstiglich@data-principles.com"]},
+  {cat:"Analytics", title:"Organisational Transformation through Data Analytics", speaker:"Efua Dougan", org:"DS Consortium for Information Technology Consultants LLC", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:[], email:["efua.dougan@legroupeds.com"]},
+  {cat:"Analytics", title:"Organisational Transformation through Data Analytics, Fundamentals of Data Governance & Quality for SMEs, Data Strategy for SMEs", speaker:"Efua Dougan", org:"DS Consortium for Information Technology Consultants LLC", venue:["Virtual","In Person"], cost:["Fee","Expenses"], lang:[], email:["efua.dougan@legroupeds.com"]},
+  {cat:"Analytics", title:"Data Analytics", speaker:"Shamnad Shaffi, Jinal Mehta", org:"Amazon Web Services", venue:["Virtual"], cost:[], lang:[], email:["shamnadshaffi@ieee.org"]},
+
+  {cat:"Diversity & Gender Balance", title:"Bridging the Gap: The Power to Stay! (How to Help Young Girls and Women Come to Tech/Data Fields)", speaker:"Aakriti Agrawal Kim", org:"", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Hindi"], email:["aakriti1215@gmail.com"]},
+  {cat:"Diversity & Gender Balance", title:"Diversity and Gender Balance in Teams", speaker:"Mai Alowaish", org:"Gulf Bank", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Arabic"], email:["mai.alowaish@gmail.com"]},
+  {cat:"Diversity & Gender Balance", title:"Supporting Women in Data and Analytics", speaker:"Mai Alowaish", org:"Gulf Bank", venue:["Virtual","In Person"], cost:["Expenses"], lang:["Arabic"], email:["mai.alowaish@gmail.com"]},
+];
+
+const CAT_ORDER = [
+  "Data Management & Strategy","Data Handling Ethics","Data Governance","Data Architecture",
+  "Data Modeling & Design","Data Storage & Operations","Data Security","Reference & Master Data",
+  "Data Warehousing & BI","Metadata","Data Quality","Big Data & Data Science","Analytics","Diversity & Gender Balance"
+];
+
+const tbody = document.getElementById('tbody');
+const emptyEl = document.getElementById('empty');
+const chipsEl = document.getElementById('chips');
+const searchEl = document.getElementById('search');
+const countline = document.getElementById('countline');
+let activeCat = "All";
+
+const esc = s => (s||"").replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const dash = '<span class="dash">&mdash;</span>'.replace('&mdash;','\u2014'); // visual only, not copy
+
+function cellTags(arr,cls){
+  if(!arr.length) return '<span class="dash">\u00B7</span>';
+  return arr.map(v=>`<span class="pill ${cls}">${esc(v)}</span>`).join("");
+}
+function cellLang(arr){
+  const langs = ["English",...arr];
+  return langs.map(v=>`<span class="pill p-lang">${esc(v)}</span>`).join("");
+}
+function cellContact(emails){
+  if(!emails.length) return '<span class="dash">On request</span>';
+  return emails.map(e=>`<a href="mailto:${esc(e)}">${esc(e)}</a>`).join("<br>");
+}
+
+function dataRow(d){
+  return `<tr class="data-row">
+    <td class="t-title">${esc(d.title)}</td>
+    <td class="t-speaker">${esc(d.speaker)}</td>
+    <td>${cellTags(d.venue,'p-venue')}</td>
+    <td>${cellTags(d.cost,'p-cost')}</td>
+    <td>${cellLang(d.lang)}</td>
+    <td class="t-org">${d.org?esc(d.org):'<span class="dash">\u00B7</span>'}</td>
+    <td class="t-contact">${cellContact(d.email)}</td>
+  </tr>`;
+}
+function catRow(cat,n){
+  return `<tr class="cat-row"><td colspan="7"><span class="cat-name">${esc(cat)} <span class="cat-count">${n}</span></span></td></tr>`;
+}
+
+function buildChips(){
+  const counts={}; DATA.forEach(d=>counts[d.cat]=(counts[d.cat]||0)+1);
+  let html=`<button class="chip active" data-cat="All">All <span class="c">${DATA.length}</span></button>`;
+  CAT_ORDER.forEach(c=>{ if(counts[c]) html+=`<button class="chip" data-cat="${c}">${c} <span class="c">${counts[c]}</span></button>`; });
+  chipsEl.innerHTML=html;
+  chipsEl.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
+    chipsEl.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    ch.classList.add('active'); activeCat=ch.dataset.cat; render();
+  }));
+}
+
+function render(){
+  const q=searchEl.value.trim().toLowerCase();
+  const match=d=>{
+    if(activeCat!=="All" && d.cat!==activeCat) return false;
+    if(!q) return true;
+    return [d.title,d.speaker,d.org,d.cat,...d.lang,...d.email].join(" ").toLowerCase().includes(q);
+  };
+  const filtered=DATA.filter(match);
+  let html="";
+  CAT_ORDER.forEach(cat=>{
+    const items=filtered.filter(d=>d.cat===cat);
+    if(!items.length) return;
+    html+=catRow(cat,items.length)+items.map(dataRow).join("");
+  });
+  tbody.innerHTML=html;
+  emptyEl.style.display=filtered.length?"none":"block";
+  document.querySelector('.tablecard').style.display=filtered.length?"block":"none";
+  countline.innerHTML=`Showing <b>${filtered.length}</b> of <b>${DATA.length}</b> presentations`;
+}
+
+buildChips();
+render();
+searchEl.addEventListener('input',render);
+</script>
+</body>
+</html>
